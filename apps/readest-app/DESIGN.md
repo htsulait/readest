@@ -150,6 +150,10 @@ be flipped to the logical equivalent.
   `rtl:rotate-180`, or `rtl:-scale-x-100` when rotating would turn the glyph
   upside down. Other icons (search, play, settings) don't mirror.
 
+**Set `dir` only on `<html>`.** `Providers.tsx` sets it from the UI language,
+and every component inherits it. Don't add `dir={getDirFromUILanguage()}` to
+a component; set `dir` on one only for the exceptions above.
+
 #### 2.9 Every panel and sub-page starts with title + description (REQUIRED)
 
 Single-sentence descriptions and helper text omit the final period. Keep normal punctuation
