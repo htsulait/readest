@@ -646,8 +646,10 @@ const FoliateViewer: React.FC<{
         writingDir?.vertical || viewSettings.writingMode.includes('vertical') || false;
       // Fixed-layout books carry no writing mode; their direction may come
       // from the document itself (PDF ViewerPreferences /Direction /R2L). The
-      // UI language is the last resort, for a book that says nothing at all.
-      const documentRtl = writingDir?.rtl || getDirFromUILanguage() === 'rtl' || false;
+      // UI language is the last resort, for a book that says nothing at all:
+      // a book that names its language (an English book) is not paged RTL.
+      const uiRtl = !bookDoc.metadata?.language?.length && getDirFromUILanguage() === 'rtl';
+      const documentRtl = writingDir?.rtl || uiRtl;
       const newRtl = getPageProgressionRTL(viewSettings.writingMode, bookDoc.dir, documentRtl);
       // Continuous scrolling keeps the neighbouring sections mounted, and they
       // finish loading *after* the one being read. A horizontal front matter
