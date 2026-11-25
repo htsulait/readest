@@ -19,7 +19,7 @@ import { useDefaultIconSize } from '@/hooks/useResponsiveSize';
 import { useBackgroundTexture } from '@/hooks/useBackgroundTexture';
 import { useEinkMode } from '@/hooks/useEinkMode';
 import { getLocale } from '@/utils/misc';
-import { getDirFromUILanguage } from '@/utils/rtl';
+import { getDirFromLanguage } from '@/utils/rtl';
 import { getAndroidPatchedViewportContent } from '@/utils/viewport';
 import {
   getTelemetryDecision,
@@ -128,14 +128,12 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const handlerLanguageChanged = (lng: string) => {
+      // getDirFromLanguage gives 'auto' for LTR languages; the root needs a
+      // fixed 'ltr', or the first strong character on the page picks it.
+      const dir = getDirFromLanguage(lng) === 'rtl' ? 'rtl' : 'ltr';
       document.documentElement.lang = lng;
-      // Set RTL class on document for targeted styling without affecting layout
-      const dir = getDirFromUILanguage();
-      if (dir === 'rtl') {
-        document.documentElement.classList.add('ui-rtl');
-      } else {
-        document.documentElement.classList.remove('ui-rtl');
-      }
+      document.documentElement.dir = dir;
+      document.documentElement.classList.toggle('ui-rtl', dir === 'rtl');
     };
 
     const locale = getLocale();
