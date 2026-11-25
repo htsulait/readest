@@ -138,6 +138,18 @@ logical properties.
 case (rare — usually only icon glyphs that have a fixed orientation) should
 be flipped to the logical equivalent.
 
+**What doesn't follow the UI language:**
+
+- **The book.** Its direction comes from the writing mode in Settings, then
+  the book (`bookDoc.dir`, then its language). The UI language decides only
+  for a book that names no language.
+- **Physical edges and gestures.** A control tied to a screen edge or a swipe
+  axis (the brightness and auto-scroll overlays) keeps `dir='ltr'` with a
+  comment saying why.
+- **Icons.** Directional glyphs (arrows, chevrons, back) mirror with
+  `rtl:rotate-180`, or `rtl:-scale-x-100` when rotating would turn the glyph
+  upside down. Other icons (search, play, settings) don't mirror.
+
 #### 2.9 Every panel and sub-page starts with title + description (REQUIRED)
 
 Single-sentence descriptions and helper text omit the final period. Keep normal punctuation
