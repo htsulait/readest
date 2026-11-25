@@ -396,7 +396,6 @@ const Dialog: React.FC<DialogProps> = ({
         'modal sm:min-w-90 z-50 h-full w-full items-start! bg-transparent! sm:w-full sm:items-center!',
         className,
       )}
-      dir={isRtl ? 'rtl' : undefined}
     >
       <Overlay
         captureBlocking={isOpen}
