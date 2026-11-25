@@ -167,3 +167,29 @@ it('lets only the section being read set the book writing mode', async () => {
   load(frontMatter, 0);
   expect(h.settings).toMatchObject({ vertical: false, rtl: false });
 });
+
+// The UI language is only the last resort for a book with no direction. An
+// English book read in the Arabic UI was paged right-to-left, so the right
+// arrow turned back a page.
+it('pages a book by its own language, not the UI language', async () => {
+  localStorage.setItem('i18nextLng', 'ar');
+  h.settings = { writingMode: 'auto', vertical: false, rtl: false };
+  const props = {
+    bookKey: 'english-book',
+    bookDoc: { metadata: { language: 'en' } },
+    config: {},
+    gridInsets: { top: 0, right: 0, bottom: 0, left: 0 },
+    contentInsets: { top: 0, right: 0, bottom: 0, left: 0 },
+  } as unknown as ComponentProps<typeof FoliateViewer>;
+  vi.mocked(useFoliateEvents).mockClear();
+  render(<FoliateViewer {...props} />);
+  await waitFor(() => expect(vi.mocked(useFoliateEvents).mock.calls.some(([v]) => v)).toBe(true));
+  const onLoad = vi.mocked(useFoliateEvents).mock.calls.find(([view]) => view)![1]!.onLoad!;
+  const doc = Object.assign(document.implementation.createHTMLDocument('chapter'), {
+    isEventListenersAdded: true,
+  });
+  h.contents = [];
+  onLoad(new CustomEvent('load', { detail: { doc, index: 0 } }));
+
+  expect(h.settings.rtl).toBe(false);
+});
